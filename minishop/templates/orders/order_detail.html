@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load shop_extras %}
+{% block title %}Order #{{ order.pk }} · MiniShop{% endblock %}
+{% block content %}
+{% if just_paid and order.status == "paid" %}<div class="flash success">Payment received. Thank you!</div>{% endif %}
+<h1>Order #{{ order.pk }} <span class="status {{ order.status }}">{{ order.get_status_display }}</span></h1>
+<p class="muted">Placed {{ order.created_at|date:"j M Y, H:i" }} · {{ order.email }}</p>
+<table class="table">
+  <thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+  <tbody>
+  {% for item in order.items.all %}
+    <tr><td>{{ item.product_name }}</td><td>{{ item.unit_price_cents|money }}</td><td>{{ item.quantity }}</td><td>{{ item.subtotal_cents|money }}</td></tr>
+  {% endfor %}
+  </tbody>
+  <tfoot><tr><td colspan="3" class="right"><strong>Total</strong></td><td><strong>{{ order.total_cents|money }}</strong></td></tr></tfoot>
+</table>
+{% if order.status == "pending" %}
+  <p class="muted">Payment not completed yet. If you just paid, refresh in a few seconds.</p>
+{% endif %}
+{% endblock %}

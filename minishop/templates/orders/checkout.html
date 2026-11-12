@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load shop_extras %}
+{% block title %}Checkout · MiniShop{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<table class="table">
+  {% for line in lines %}
+    <tr><td>{{ line.quantity }} × {{ line.product.name }}</td><td class="right">{{ line.subtotal_cents|money }}</td></tr>
+  {% endfor %}
+  <tr><td><strong>Total</strong></td><td class="right"><strong>{{ total_cents|money }}</strong></td></tr>
+</table>
+<form method="post" class="form">
+  {% csrf_token %}
+  <label>Email for your receipt <input type="email" name="email" value="{{ email }}" required></label>
+  <button class="btn">Pay {{ total_cents|money }}</button>
+  <p class="muted">Stock is reserved while you pay. Unpaid orders are released after 30 minutes.</p>
+</form>
+{% endblock %}

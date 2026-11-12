@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load shop_extras %}
+{% block title %}{{ product.name }} · MiniShop{% endblock %}
+{% block content %}
+<a href="{% url 'catalog:product_list' %}">← Back to shop</a>
+<div class="detail">
+  <div class="thumb big">
+    {% if product.image_url %}<img src="{{ product.image_url }}" alt="{{ product.name }}">{% else %}<span>{{ product.category.name }}</span>{% endif %}
+  </div>
+  <div>
+    <p class="muted">{{ product.category.name }}</p>
+    <h1>{{ product.name }}</h1>
+    <p class="price big">{{ product.price_cents|money }}</p>
+    <p>{{ product.description }}</p>
+    <p class="muted">{% if product.in_stock %}{{ product.stock }} in stock{% else %}Out of stock{% endif %}</p>
+    {% if product.in_stock %}
+      <button class="btn" hx-post="{% url 'cart:add' product.pk %}" hx-target="#cart-count" hx-swap="outerHTML">Add to cart</button>
+    {% else %}
+      <button class="btn" disabled>Out of stock</button>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

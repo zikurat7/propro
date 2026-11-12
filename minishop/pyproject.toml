@@ -1,0 +1,40 @@
+[project]
+name = "minishop"
+version = "0.1.0"
+requires-python = ">=3.15"
+dependencies = [
+    "dj-database-url>=3.1.2",
+    "django>=5.2",
+    "djangorestframework>=3.18.3",
+    "drf-spectacular>=0.30.0",
+    "gunicorn>=27.0.0",
+    "psycopg[binary]>=3.3.9",
+    "stripe>=17.0.0",
+    "whitenoise>=6.12.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.14.0",
+    "ruff>=0.17.4",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.test_settings"
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["catalog", "cart", "orders", "accounts", "api", "dashboard"]
+omit = ["*/migrations/*", "*/management/*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py315"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "DJ", "SIM"]

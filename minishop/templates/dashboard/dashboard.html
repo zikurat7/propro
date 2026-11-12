@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load shop_extras %}
+{% block title %}Dashboard · MiniShop{% endblock %}
+{% block content %}
+<h1>Sales dashboard</h1>
+
+<div class="stats">
+  <div class="stat"><span>Revenue</span><strong>{{ revenue_cents|money }}</strong></div>
+  <div class="stat"><span>Paid orders</span><strong>{{ paid_orders }}</strong></div>
+  <div class="stat"><span>Avg. order</span><strong>{{ average_cents|money }}</strong></div>
+  <div class="stat"><span>Pending</span><strong>{{ pending_orders }}</strong></div>
+</div>
+
+<h2>Revenue, last 30 days</h2>
+<canvas id="revenue" height="90"></canvas>
+{{ series|json_script:"series-data" }}
+
+<div class="two-col">
+  <section>
+    <h2>Top products</h2>
+    <table class="table">
+      {% for p in top_products %}
+        <tr><td>{{ p.product__name }}</td><td>{{ p.units }} sold</td><td>{{ p.revenue|money }}</td></tr>
+      {% empty %}<tr><td>No paid orders yet.</td></tr>{% endfor %}
+    </table>
+  </section>
+  <section>
+    <h2>Low stock (≤ {{ low_stock_threshold }})</h2>
+    <table class="table">
+      {% for p in low_stock %}
+        <tr><td><a href="{% url 'admin:catalog_product_change' p.pk %}">{{ p.name }}</a></td><td>{{ p.stock }} left</td></tr>
+      {% empty %}<tr><td>All good.</td></tr>{% endfor %}
+    </table>
+  </section>
+</div>
+
+<h2>Recent orders</h2>
+<table class="table">
+  {% for o in recent_orders %}
+    <tr>
+      <td><a href="{% url 'admin:orders_order_change' o.pk %}">#{{ o.pk }}</a></td>
+      <td>{{ o.email }}</td>
+      <td><span class="status {{ o.status }}">{{ o.get_status_display }}</span></td>
+      <td>{{ o.total_cents|money }}</td>
+    </tr>
+  {% empty %}<tr><td>No orders yet.</td></tr>{% endfor %}
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const series = JSON.parse(document.getElementById("series-data").textContent);
+  new Chart(document.getElementById("revenue"), {
+    type: "bar",
+    data: {
+      labels: series.map(d => d.day.slice(5)),
+      datasets: [{ label: "Revenue ($)", data: series.map(d => d.revenue), backgroundColor: "#4f46e5" }],
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } },
+  });
+</script>
+{% endblock %}

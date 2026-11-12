@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load shop_extras %}
+{% block title %}My orders · MiniShop{% endblock %}
+{% block content %}
+<h1>My orders</h1>
+{% if orders %}
+<table class="table">
+  <thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
+  <tbody>
+  {% for order in orders %}
+    <tr>
+      <td><a href="{{ order.get_absolute_url }}">#{{ order.pk }}</a></td>
+      <td>{{ order.created_at|date:"j M Y" }}</td>
+      <td><span class="status {{ order.status }}">{{ order.get_status_display }}</span></td>
+      <td>{{ order.total_cents|money }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No orders yet.</p>
+{% endif %}
+{% endblock %}

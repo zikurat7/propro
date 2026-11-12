@@ -1,0 +1,27 @@
+{% load shop_extras %}
+{% if oob_badge %}{% include "cart/_badge.html" with oob=True %}{% endif %}
+{% if lines %}
+<table class="table">
+  <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+  <tbody>
+  {% for line in lines %}
+    <tr>
+      <td><a href="{{ line.product.get_absolute_url }}">{{ line.product.name }}</a></td>
+      <td>{{ line.product.price_cents|money }}</td>
+      <td>
+        <form hx-post="{% url 'cart:update' line.product.pk %}" hx-target="#cart" hx-trigger="change" method="post" action="{% url 'cart:update' line.product.pk %}">
+          {% csrf_token %}
+          <input type="number" name="quantity" value="{{ line.quantity }}" min="0" max="{{ line.product.stock }}" class="qty">
+        </form>
+      </td>
+      <td>{{ line.subtotal_cents|money }}</td>
+      <td><button class="link danger" hx-post="{% url 'cart:remove' line.product.pk %}" hx-target="#cart">Remove</button></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  <tfoot><tr><td colspan="3" class="right"><strong>Total</strong></td><td colspan="2"><strong>{{ total_cents|money }}</strong></td></tr></tfoot>
+</table>
+<p class="right"><a class="btn" href="{% url 'orders:checkout' %}">Checkout</a></p>
+{% else %}
+<p>Your cart is empty. <a href="{% url 'catalog:product_list' %}">Keep shopping</a></p>
+{% endif %}
