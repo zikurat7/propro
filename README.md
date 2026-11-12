@@ -15,6 +15,8 @@ I picked an online shop because everyone understands the domain, and it has some
 ### Django admin
 ![Django admin](screenshots/pic3.png)
 
+### Stripe Checkout
+![Stripe Checkout](screenshots/pic4.png)
 
 
 ## What it does
