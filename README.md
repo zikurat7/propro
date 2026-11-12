@@ -4,6 +4,19 @@ A small e-commerce app I built to practice the full stack in Python: product cat
 
 I picked an online shop because everyone understands the domain, and it has some problems I find interesting. Two people can't buy the last item, money can't be handled with floats, and payment webhooks arrive late or twice.
 
+## Screenshots
+
+### Homepage
+![Homepage](screenshots/pic1.png)
+
+### Dashboard
+![Dashboard](screenshots/pic2.png)
+
+### Django admin
+![Django admin](screenshots/pic3.png)
+
+
+
 ## What it does
 
 - **Storefront**: browse, search, filter by category and paginate. The cart updates without a page reload using HTMX.
