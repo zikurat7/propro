@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+# The Django project lives in ./minishop, not at the repo root.
+defaults:
+  run:
+    working-directory: minishop
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,6 +32,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          cache-dependency-glob: minishop/uv.lock
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
